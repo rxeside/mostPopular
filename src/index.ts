@@ -5,13 +5,14 @@ async function main() {
     const mostPopularUser = await findMostPopular(groupId);
 
     if (mostPopularUser) {
-        console.log(`Самый популярный пользователь: ID = ${mostPopularUser.id}, Количество друзей = ${mostPopularUser.count}`);
+        console.log(`Самый популярный пользователь: ID = ${mostPopularUser.id}, Количество друзей = ${mostPopularUser.friendCount}, Количество постов = ${mostPopularUser.postCount}, Количество репостов = ${mostPopularUser.repostCount}`);
     } else {
         console.log('Не удалось найти самого популярного пользователя.');
     }
 }
 
 main();
+
 
 // индексы хирша (используется для статей)
 // по количеству постов, анализ каждого поста, количесто репостов

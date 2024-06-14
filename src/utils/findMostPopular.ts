@@ -1,8 +1,10 @@
-import { fetchGroupUsers, fetchUserFriends } from '../api/vkApi';
+import { fetchGroupUsers, fetchUserFriends, fetchUserPosts } from '../api/vkApi';
 
 interface User {
     id: string;
-    count: number;
+    friendCount: number;
+    postCount: number;
+    repostCount: number;
 }
 
 async function findMostPopular(groupId: string): Promise<User | null> {
@@ -15,26 +17,43 @@ async function findMostPopular(groupId: string): Promise<User | null> {
         const members = data.response.items;
         console.log('Group members:', members);
 
-        const userFriendCounts: { [key: string]: number } = {};
-
+        const userStats: { [key: string]: User } = {};
 
         for (const member of members) {
-            console.log('Fetching friends for member:', member);
-            const friendsData = await fetchUserFriends(member.toString());
-            if (friendsData.response) {
-                userFriendCounts[member] = friendsData.response.count;
-                console.log(`User ${member} has ${friendsData.response.count} friends.`);
-            } else {
-                userFriendCounts[member] = 0;
-                console.log(`User ${member} has no friends.`);
+            const memberId = member.toString();
+            console.log('Fetching data for member:', memberId);
+
+            const friendsData = await fetchUserFriends(memberId);
+            const postsData = await fetchUserPosts(memberId);
+
+            const friendCount = friendsData.response ? friendsData.response.count : 0;
+            const postCount = postsData.response ? postsData.response.items.length : 0;
+
+            let repostCount = 0;
+            if (postsData.response) {
+                for (const post of postsData.response.items) {
+                    if (post.copy_history) {
+                        repostCount += post.copy_history.length;
+                    }
+                }
             }
+
+            userStats[memberId] = {
+                id: memberId,
+                friendCount,
+                postCount,
+                repostCount
+            };
+
+            console.log(`User ${memberId} has ${friendCount} friends, ${postCount} posts, and ${repostCount} reposts.`);
         }
 
-        
         let mostPopularUser: User | null = null;
-        for (const userId in userFriendCounts) {
-            if (!mostPopularUser || userFriendCounts[userId] > mostPopularUser.count) {
-                mostPopularUser = { id: userId, count: userFriendCounts[userId] };
+        for (const userId in userStats) {
+            if (!mostPopularUser || userStats[userId].friendCount > mostPopularUser.friendCount ||
+                userStats[userId].postCount > mostPopularUser.postCount ||
+                userStats[userId].repostCount > mostPopularUser.repostCount) {
+                mostPopularUser = userStats[userId];
             }
         }
 

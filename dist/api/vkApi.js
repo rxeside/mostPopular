@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchUserFriends = exports.fetchGroupInfo = exports.fetchGroupUsers = exports.fetchUserGroups = void 0;
+exports.fetchUserPosts = exports.fetchUserFriends = exports.fetchGroupInfo = exports.fetchGroupUsers = exports.fetchUserGroups = void 0;
 var axios_1 = __importDefault(require("axios"));
 var token = 'vk1.a.7SgNwStbScck4Bccsx1Smaz5xX66FJORBBSfFlk3qe6WkpJLgYGuczJk-rPKwi4OhjNj6H_TlThVGEPJhofJA67zU_orWjgRuqY7zyz5EEpbbiXA8AB6u3fhCc8BFJDHKjp31Zd-4rNmDXKyLg7m2dq5rWIjt0-jBUnWNaT9EBbZmCjosP8kTVvUnzwBDpUga1w3mVsgp_XXpPWPcQpQaw';
 var apiVersion = '5.199';
@@ -140,7 +140,6 @@ function fetchUserFriends(userId) {
                         })];
                 case 1:
                     response = _a.sent();
-                    //console.log('fetchUserFriends response:', response.data);
                     return [2 /*return*/, response.data];
                 case 2:
                     error_4 = _a.sent();
@@ -152,3 +151,30 @@ function fetchUserFriends(userId) {
     });
 }
 exports.fetchUserFriends = fetchUserFriends;
+function fetchUserPosts(userId) {
+    return __awaiter(this, void 0, void 0, function () {
+        var response, error_5;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, axios_1.default.get('https://api.vk.com/method/wall.get', {
+                            params: {
+                                owner_id: userId,
+                                access_token: token,
+                                v: apiVersion
+                            }
+                        })];
+                case 1:
+                    response = _a.sent();
+                    return [2 /*return*/, response.data];
+                case 2:
+                    error_5 = _a.sent();
+                    console.error('Error in fetchUserPosts:', error_5);
+                    throw error_5;
+                case 3: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.fetchUserPosts = fetchUserPosts;

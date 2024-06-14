@@ -48,7 +48,7 @@ function main() {
                 case 1:
                     mostPopularUser = _a.sent();
                     if (mostPopularUser) {
-                        console.log("\u0421\u0430\u043C\u044B\u0439 \u043F\u043E\u043F\u0443\u043B\u044F\u0440\u043D\u044B\u0439 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C: ID = ".concat(mostPopularUser.id, ", \u041A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u0434\u0440\u0443\u0437\u0435\u0439 = ").concat(mostPopularUser.count));
+                        console.log("\u0421\u0430\u043C\u044B\u0439 \u043F\u043E\u043F\u0443\u043B\u044F\u0440\u043D\u044B\u0439 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C: ID = ".concat(mostPopularUser.id, ", \u041A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u0434\u0440\u0443\u0437\u0435\u0439 = ").concat(mostPopularUser.friendCount, ", \u041A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u043F\u043E\u0441\u0442\u043E\u0432 = ").concat(mostPopularUser.postCount, ", \u041A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u0440\u0435\u043F\u043E\u0441\u0442\u043E\u0432 = ").concat(mostPopularUser.repostCount));
                     }
                     else {
                         console.log('Не удалось найти самого популярного пользователя.');
@@ -59,3 +59,5 @@ function main() {
     });
 }
 main();
+// индексы хирша (используется для статей)
+// по количеству постов, анализ каждого поста, количесто репостов
