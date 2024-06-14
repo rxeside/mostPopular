@@ -39,19 +39,40 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var findMostPopular_1 = require("./utils/findMostPopular");
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var groupId, mostPopularUser;
+        var groupId, mostPopularByFriends, mostPopularByPosts, mostPopularByReposts;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     groupId = '220321079';
-                    return [4 /*yield*/, (0, findMostPopular_1.findMostPopular)(groupId)];
+                    console.log('Starting to find the most popular user by friends...');
+                    return [4 /*yield*/, (0, findMostPopular_1.findMostPopularByFriends)(groupId)];
                 case 1:
-                    mostPopularUser = _a.sent();
-                    if (mostPopularUser) {
-                        console.log("\u0421\u0430\u043C\u044B\u0439 \u043F\u043E\u043F\u0443\u043B\u044F\u0440\u043D\u044B\u0439 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C: ID = ".concat(mostPopularUser.id, ", \u041A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u0434\u0440\u0443\u0437\u0435\u0439 = ").concat(mostPopularUser.friendCount, ", \u041A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u043F\u043E\u0441\u0442\u043E\u0432 = ").concat(mostPopularUser.postCount, ", \u041A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u0440\u0435\u043F\u043E\u0441\u0442\u043E\u0432 = ").concat(mostPopularUser.repostCount));
+                    mostPopularByFriends = _a.sent();
+                    console.log('Starting to find the most popular user by posts...');
+                    return [4 /*yield*/, (0, findMostPopular_1.findMostPopularByPosts)(groupId)];
+                case 2:
+                    mostPopularByPosts = _a.sent();
+                    console.log('Starting to find the most popular user by reposts...');
+                    return [4 /*yield*/, (0, findMostPopular_1.findMostPopularByReposts)(groupId)];
+                case 3:
+                    mostPopularByReposts = _a.sent();
+                    if (mostPopularByFriends) {
+                        console.log("\u0421\u0430\u043C\u044B\u0439 \u043F\u043E\u043F\u0443\u043B\u044F\u0440\u043D\u044B\u0439 \u043F\u043E \u0434\u0440\u0443\u0437\u044C\u044F\u043C: ID = ".concat(mostPopularByFriends.id, ", \u041A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u0434\u0440\u0443\u0437\u0435\u0439 = ").concat(mostPopularByFriends.count));
                     }
                     else {
-                        console.log('Не удалось найти самого популярного пользователя.');
+                        console.log('Не удалось найти самого популярного пользователя по друзьям.');
+                    }
+                    if (mostPopularByPosts) {
+                        console.log("\u0421\u0430\u043C\u044B\u0439 \u043F\u043E\u043F\u0443\u043B\u044F\u0440\u043D\u044B\u0439 \u043F\u043E \u043F\u043E\u0441\u0442\u0430\u043C: ID = ".concat(mostPopularByPosts.id, ", \u041A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u043F\u043E\u0441\u0442\u043E\u0432 = ").concat(mostPopularByPosts.count));
+                    }
+                    else {
+                        console.log('Не удалось найти самого популярного пользователя по постам.');
+                    }
+                    if (mostPopularByReposts) {
+                        console.log("\u0421\u0430\u043C\u044B\u0439 \u043F\u043E\u043F\u0443\u043B\u044F\u0440\u043D\u044B\u0439 \u043F\u043E \u0440\u0435\u043F\u043E\u0441\u0442\u0430\u043C: ID = ".concat(mostPopularByReposts.id, ", \u041A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u0440\u0435\u043F\u043E\u0441\u0442\u043E\u0432 = ").concat(mostPopularByReposts.count));
+                    }
+                    else {
+                        console.log('Не удалось найти самого популярного пользователя по репостам.');
                     }
                     return [2 /*return*/];
             }

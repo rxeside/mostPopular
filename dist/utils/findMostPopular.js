@@ -36,76 +36,174 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findMostPopular = void 0;
+exports.findMostPopularByReposts = exports.findMostPopularByPosts = exports.findMostPopularByFriends = void 0;
 var vkApi_1 = require("../api/vkApi");
-function findMostPopular(groupId) {
+function findMostPopularByFriends(groupId) {
     return __awaiter(this, void 0, void 0, function () {
-        var data, members, userStats, _i, members_1, member, memberId, friendsData, postsData, friendCount, postCount, repostCount, _a, _b, post, mostPopularUser, userId, error_1;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
+        var data, members, userFriendCounts, i, member, friendsData, mostPopularUser, userId, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
-                    _c.trys.push([0, 7, , 8]);
+                    _a.trys.push([0, 6, , 7]);
                     return [4 /*yield*/, (0, vkApi_1.fetchGroupUsers)(groupId)];
                 case 1:
-                    data = _c.sent();
+                    data = _a.sent();
                     if (!data.response) {
                         throw new Error('No response from VK API');
                     }
                     members = data.response.items;
-                    console.log('Group members:', members);
-                    userStats = {};
-                    _i = 0, members_1 = members;
-                    _c.label = 2;
+                    userFriendCounts = {};
+                    i = 0;
+                    _a.label = 2;
                 case 2:
-                    if (!(_i < members_1.length)) return [3 /*break*/, 6];
-                    member = members_1[_i];
-                    memberId = member.toString();
-                    console.log('Fetching data for member:', memberId);
-                    return [4 /*yield*/, (0, vkApi_1.fetchUserFriends)(memberId)];
+                    if (!(i < members.length)) return [3 /*break*/, 5];
+                    member = members[i];
+                    console.log("Fetching friends for member ".concat(member, " (").concat(i + 1, "/").concat(members.length, ")"));
+                    return [4 /*yield*/, (0, vkApi_1.fetchUserFriends)(member.toString())];
                 case 3:
-                    friendsData = _c.sent();
-                    return [4 /*yield*/, (0, vkApi_1.fetchUserPosts)(memberId)];
-                case 4:
-                    postsData = _c.sent();
-                    friendCount = friendsData.response ? friendsData.response.count : 0;
-                    postCount = postsData.response ? postsData.response.items.length : 0;
-                    repostCount = 0;
-                    if (postsData.response) {
-                        for (_a = 0, _b = postsData.response.items; _a < _b.length; _a++) {
-                            post = _b[_a];
-                            if (post.copy_history) {
-                                repostCount += post.copy_history.length;
-                            }
-                        }
+                    friendsData = _a.sent();
+                    if (friendsData.response) {
+                        userFriendCounts[member] = friendsData.response.count;
+                        console.log("User ".concat(member, " has ").concat(friendsData.response.count, " friends."));
                     }
-                    userStats[memberId] = {
-                        id: memberId,
-                        friendCount: friendCount,
-                        postCount: postCount,
-                        repostCount: repostCount
-                    };
-                    console.log("User ".concat(memberId, " has ").concat(friendCount, " friends, ").concat(postCount, " posts, and ").concat(repostCount, " reposts."));
-                    _c.label = 5;
-                case 5:
-                    _i++;
+                    else {
+                        userFriendCounts[member] = 0;
+                        console.log("User ".concat(member, " has no friends."));
+                    }
+                    _a.label = 4;
+                case 4:
+                    i++;
                     return [3 /*break*/, 2];
-                case 6:
+                case 5:
                     mostPopularUser = null;
-                    for (userId in userStats) {
-                        if (!mostPopularUser || userStats[userId].friendCount > mostPopularUser.friendCount ||
-                            userStats[userId].postCount > mostPopularUser.postCount ||
-                            userStats[userId].repostCount > mostPopularUser.repostCount) {
-                            mostPopularUser = userStats[userId];
+                    for (userId in userFriendCounts) {
+                        if (!mostPopularUser || userFriendCounts[userId] > mostPopularUser.count) {
+                            mostPopularUser = { id: userId, count: userFriendCounts[userId] };
                         }
                     }
                     return [2 /*return*/, mostPopularUser];
-                case 7:
-                    error_1 = _c.sent();
-                    console.error('Error in findMostPopular:', error_1);
+                case 6:
+                    error_1 = _a.sent();
+                    console.error('Error in findMostPopularByFriends:', error_1);
                     return [2 /*return*/, null];
-                case 8: return [2 /*return*/];
+                case 7: return [2 /*return*/];
             }
         });
     });
 }
-exports.findMostPopular = findMostPopular;
+exports.findMostPopularByFriends = findMostPopularByFriends;
+function findMostPopularByPosts(groupId) {
+    return __awaiter(this, void 0, void 0, function () {
+        var data, members, userPostCounts, i, member, postsData, mostPopularUser, userId, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 6, , 7]);
+                    return [4 /*yield*/, (0, vkApi_1.fetchGroupUsers)(groupId)];
+                case 1:
+                    data = _a.sent();
+                    if (!data.response) {
+                        throw new Error('No response from VK API');
+                    }
+                    members = data.response.items;
+                    userPostCounts = {};
+                    i = 0;
+                    _a.label = 2;
+                case 2:
+                    if (!(i < members.length)) return [3 /*break*/, 5];
+                    member = members[i];
+                    console.log("Fetching posts for member ".concat(member, " (").concat(i + 1, "/").concat(members.length, ")"));
+                    return [4 /*yield*/, (0, vkApi_1.fetchUserPosts)(member.toString())];
+                case 3:
+                    postsData = _a.sent();
+                    if (postsData.response) {
+                        userPostCounts[member] = postsData.response.items.length;
+                        console.log("User ".concat(member, " has ").concat(postsData.response.items.length, " posts."));
+                    }
+                    else {
+                        userPostCounts[member] = 0;
+                        console.log("User ".concat(member, " has no posts."));
+                    }
+                    _a.label = 4;
+                case 4:
+                    i++;
+                    return [3 /*break*/, 2];
+                case 5:
+                    mostPopularUser = null;
+                    for (userId in userPostCounts) {
+                        if (!mostPopularUser || userPostCounts[userId] > mostPopularUser.count) {
+                            mostPopularUser = { id: userId, count: userPostCounts[userId] };
+                        }
+                    }
+                    return [2 /*return*/, mostPopularUser];
+                case 6:
+                    error_2 = _a.sent();
+                    console.error('Error in findMostPopularByPosts:', error_2);
+                    return [2 /*return*/, null];
+                case 7: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.findMostPopularByPosts = findMostPopularByPosts;
+function findMostPopularByReposts(groupId) {
+    return __awaiter(this, void 0, void 0, function () {
+        var data, members, userRepostCounts, i, member, postsData, repostCount, _i, _a, post, mostPopularUser, userId, error_3;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 6, , 7]);
+                    return [4 /*yield*/, (0, vkApi_1.fetchGroupUsers)(groupId)];
+                case 1:
+                    data = _b.sent();
+                    if (!data.response) {
+                        throw new Error('No response from VK API');
+                    }
+                    members = data.response.items;
+                    userRepostCounts = {};
+                    i = 0;
+                    _b.label = 2;
+                case 2:
+                    if (!(i < members.length)) return [3 /*break*/, 5];
+                    member = members[i];
+                    console.log("Fetching reposts for member ".concat(member, " (").concat(i + 1, "/").concat(members.length, ")"));
+                    return [4 /*yield*/, (0, vkApi_1.fetchUserPosts)(member.toString())];
+                case 3:
+                    postsData = _b.sent();
+                    if (postsData.response) {
+                        repostCount = 0;
+                        for (_i = 0, _a = postsData.response.items; _i < _a.length; _i++) {
+                            post = _a[_i];
+                            if (post.copy_history) {
+                                repostCount += post.copy_history.length;
+                            }
+                        }
+                        userRepostCounts[member] = repostCount;
+                        console.log("User ".concat(member, " has ").concat(repostCount, " reposts."));
+                    }
+                    else {
+                        userRepostCounts[member] = 0;
+                        console.log("User ".concat(member, " has no reposts."));
+                    }
+                    _b.label = 4;
+                case 4:
+                    i++;
+                    return [3 /*break*/, 2];
+                case 5:
+                    mostPopularUser = null;
+                    for (userId in userRepostCounts) {
+                        if (!mostPopularUser || userRepostCounts[userId] > mostPopularUser.count) {
+                            mostPopularUser = { id: userId, count: userRepostCounts[userId] };
+                        }
+                    }
+                    return [2 /*return*/, mostPopularUser];
+                case 6:
+                    error_3 = _b.sent();
+                    console.error('Error in findMostPopularByReposts:', error_3);
+                    return [2 /*return*/, null];
+                case 7: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.findMostPopularByReposts = findMostPopularByReposts;

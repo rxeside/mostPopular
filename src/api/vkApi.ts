@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const token = 'vk1.a.7SgNwStbScck4Bccsx1Smaz5xX66FJORBBSfFlk3qe6WkpJLgYGuczJk-rPKwi4OhjNj6H_TlThVGEPJhofJA67zU_orWjgRuqY7zyz5EEpbbiXA8AB6u3fhCc8BFJDHKjp31Zd-4rNmDXKyLg7m2dq5rWIjt0-jBUnWNaT9EBbZmCjosP8kTVvUnzwBDpUga1w3mVsgp_XXpPWPcQpQaw';
+const token = '';
 const apiVersion = '5.199';
 
 async function fetchUserGroups(userId: string) {
