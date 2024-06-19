@@ -38,9 +38,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.findMostPopularByReposts = exports.findMostPopularByPosts = exports.findMostPopularByFriends = void 0;
 var vkApi_1 = require("../api/vkApi");
+// Функция для нахождения популярного пользователя по друзьям внутри группы
 function findMostPopularByFriends(groupId) {
     return __awaiter(this, void 0, void 0, function () {
-        var data, members, userFriendCounts, i, member, friendsData, mostPopularUser, userId, error_1;
+        var data, members_1, userFriendCounts, i, member, friendsData, friends, friendsInGroup, mostPopularUser, userId, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -51,24 +52,26 @@ function findMostPopularByFriends(groupId) {
                     if (!data.response) {
                         throw new Error('No response from VK API');
                     }
-                    members = data.response.items;
+                    members_1 = data.response.items;
                     userFriendCounts = {};
                     i = 0;
                     _a.label = 2;
                 case 2:
-                    if (!(i < members.length)) return [3 /*break*/, 5];
-                    member = members[i];
-                    console.log("Fetching friends for member ".concat(member, " (").concat(i + 1, "/").concat(members.length, ")"));
+                    if (!(i < members_1.length)) return [3 /*break*/, 5];
+                    member = members_1[i];
+                    console.log("Fetching friends for member ".concat(member, " (").concat(i + 1, "/").concat(members_1.length, ")"));
                     return [4 /*yield*/, (0, vkApi_1.fetchUserFriends)(member.toString())];
                 case 3:
                     friendsData = _a.sent();
                     if (friendsData.response) {
-                        userFriendCounts[member] = friendsData.response.count;
-                        console.log("User ".concat(member, " has ").concat(friendsData.response.count, " friends."));
+                        friends = friendsData.response.items;
+                        friendsInGroup = friends.filter(function (friend) { return members_1.includes(friend); }).length;
+                        userFriendCounts[member] = friendsInGroup;
+                        console.log("User ".concat(member, " has ").concat(friendsInGroup, " friends in the group."));
                     }
                     else {
                         userFriendCounts[member] = 0;
-                        console.log("User ".concat(member, " has no friends."));
+                        console.log("User ".concat(member, " has no friends in the group."));
                     }
                     _a.label = 4;
                 case 4:
@@ -92,6 +95,7 @@ function findMostPopularByFriends(groupId) {
     });
 }
 exports.findMostPopularByFriends = findMostPopularByFriends;
+// Функция для нахождения популярного пользователя по постам
 function findMostPopularByPosts(groupId) {
     return __awaiter(this, void 0, void 0, function () {
         var data, members, userPostCounts, i, member, postsData, mostPopularUser, userId, error_2;
@@ -146,6 +150,7 @@ function findMostPopularByPosts(groupId) {
     });
 }
 exports.findMostPopularByPosts = findMostPopularByPosts;
+// Функция для нахождения популярного пользователя по репостам
 function findMostPopularByReposts(groupId) {
     return __awaiter(this, void 0, void 0, function () {
         var data, members, userRepostCounts, i, member, postsData, repostCount, _i, _a, post, mostPopularUser, userId, error_3;

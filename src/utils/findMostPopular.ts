@@ -5,6 +5,7 @@ interface User {
     count: number;
 }
 
+// Функция для нахождения популярного пользователя по друзьям внутри группы
 async function findMostPopularByFriends(groupId: string): Promise<User | null> {
     try {
         const data = await fetchGroupUsers(groupId);
@@ -20,11 +21,13 @@ async function findMostPopularByFriends(groupId: string): Promise<User | null> {
             console.log(`Fetching friends for member ${member} (${i + 1}/${members.length})`);
             const friendsData = await fetchUserFriends(member.toString());
             if (friendsData.response) {
-                userFriendCounts[member] = friendsData.response.count;
-                console.log(`User ${member} has ${friendsData.response.count} friends.`);
+                const friends = friendsData.response.items;
+                const friendsInGroup = friends.filter((friend: number) => members.includes(friend)).length;
+                userFriendCounts[member] = friendsInGroup;
+                console.log(`User ${member} has ${friendsInGroup} friends in the group.`);
             } else {
                 userFriendCounts[member] = 0;
-                console.log(`User ${member} has no friends.`);
+                console.log(`User ${member} has no friends in the group.`);
             }
         }
 
@@ -42,6 +45,7 @@ async function findMostPopularByFriends(groupId: string): Promise<User | null> {
     }
 }
 
+// Функция для нахождения популярного пользователя по постам
 async function findMostPopularByPosts(groupId: string): Promise<User | null> {
     try {
         const data = await fetchGroupUsers(groupId);
@@ -79,6 +83,7 @@ async function findMostPopularByPosts(groupId: string): Promise<User | null> {
     }
 }
 
+// Функция для нахождения популярного пользователя по репостам
 async function findMostPopularByReposts(groupId: string): Promise<User | null> {
     try {
         const data = await fetchGroupUsers(groupId);
