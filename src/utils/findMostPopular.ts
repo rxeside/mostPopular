@@ -5,15 +5,35 @@ interface User {
     count: number;
 }
 
+async function fetchAllGroupUsers(groupId: string): Promise<number[]> {
+    const members: number[] = [];
+    let offset = 0;
+    const count = 1000;
+    while (true) {
+        const data = await fetchGroupUsers(groupId, offset, count);
+        if (data.response) {
+            members.push(...data.response.items);
+            if (data.response.items.length < count) {
+                break;
+            }
+            offset += count;
+        } else {
+            break;
+        }
+    }
+    return members;
+}
+
+
+
 // Функция для нахождения популярного пользователя по друзьям внутри группы
 async function findMostPopularByFriends(groupId: string): Promise<User | null> {
     try {
-        const data = await fetchGroupUsers(groupId);
-        if (!data.response) {
-            throw new Error('No response from VK API');
+        const members = await fetchAllGroupUsers(groupId);
+        if (!members.length) {
+            throw new Error('No members found in the group');
         }
 
-        const members = data.response.items;
         const userFriendCounts: { [key: string]: number } = {};
 
         for (let i = 0; i < members.length; i++) {
@@ -48,12 +68,11 @@ async function findMostPopularByFriends(groupId: string): Promise<User | null> {
 // Функция для нахождения популярного пользователя по постам
 async function findMostPopularByPosts(groupId: string): Promise<User | null> {
     try {
-        const data = await fetchGroupUsers(groupId);
-        if (!data.response) {
-            throw new Error('No response from VK API');
+        const members = await fetchAllGroupUsers(groupId);
+        if (!members.length) {
+            throw new Error('No members found in the group');
         }
 
-        const members = data.response.items;
         const userPostCounts: { [key: string]: number } = {};
 
         for (let i = 0; i < members.length; i++) {
@@ -86,12 +105,11 @@ async function findMostPopularByPosts(groupId: string): Promise<User | null> {
 // Функция для нахождения популярного пользователя по репостам
 async function findMostPopularByReposts(groupId: string): Promise<User | null> {
     try {
-        const data = await fetchGroupUsers(groupId);
-        if (!data.response) {
-            throw new Error('No response from VK API');
+        const members = await fetchAllGroupUsers(groupId);
+        if (!members.length) {
+            throw new Error('No members found in the group');
         }
 
-        const members = data.response.items;
         const userRepostCounts: { [key: string]: number } = {};
 
         for (let i = 0; i < members.length; i++) {

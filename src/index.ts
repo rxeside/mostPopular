@@ -4,13 +4,16 @@ async function main() {
     const groupId = '220321079'; // или '210114453'
 
     console.log('Starting to find the most popular user by friends...');
-    const mostPopularByFriends = await findMostPopularByFriends(groupId);
+    
 
     console.log('Starting to find the most popular user by posts...');
-    const mostPopularByPosts = await findMostPopularByPosts(groupId);
-
+    
     console.log('Starting to find the most popular user by reposts...');
+
+    const mostPopularByFriends = await findMostPopularByFriends(groupId);
+    const mostPopularByPosts = await findMostPopularByPosts(groupId);
     const mostPopularByReposts = await findMostPopularByReposts(groupId);
+
 
     if (mostPopularByFriends) {
         console.log(`Самый популярный по друзьям: ID = ${mostPopularByFriends.id}, Количество друзей = ${mostPopularByFriends.count}`);
@@ -24,6 +27,7 @@ async function main() {
         console.log('Не удалось найти самого популярного пользователя по постам.');
     }
 
+
     if (mostPopularByReposts) {
         console.log(`Самый популярный по репостам: ID = ${mostPopularByReposts.id}, Количество репостов = ${mostPopularByReposts.count}`);
     } else {
@@ -32,10 +36,3 @@ async function main() {
 }
 
 main();
-
-// индексы хирша (используется для статей)
-// по количеству постов, анализ каждого поста, количесто репостов
-
-// проверять популярность по друзьям внутри группы
-// проверить можно ли узнать количество сообщений
-// по количеству просмотров поста и по комментам
