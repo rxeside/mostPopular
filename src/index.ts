@@ -4,7 +4,6 @@ async function main() {
     const groupId = '220321079'; // или '210114453'
 
     console.log('Starting to find the most popular user by friends...');
-    
 
     console.log('Starting to find the most popular user by posts...');
     
