@@ -5,33 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VK Popular User Finder</title>
     <script defer src="/client.js"></script>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
 <h1>Найти самого популярного пользователя в группе VK</h1>
 
-<form id="groupForm">
-    <label for="groupId">Введите ID группы:</label>
-    <input type="text" id="groupId" name="groupId" required>
+<div class="container">
+    <form id="groupForm">
+        <label for="groupId">Введите ID группы:</label>
+        <input type="text" id="groupId" name="groupId" required>
 
-    <fieldset>
-        <legend>Выберите критерий:</legend>
-        <label>
-            <input type="radio" name="criterion" value="friends" checked> По друзьям
-        </label>
-        <label>
-            <input type="radio" name="criterion" value="posts"> По постам
-        </label>
-        <label>
-            <input type="radio" name="criterion" value="reposts"> По репостам
-        </label>
-        <label>
-            <input type="radio" name="criterion" value="allMetrics"> По всем метрикам
-        </label>
-    </fieldset>
+        <fieldset>
+            <legend>Выберите критерий:</legend>
+            <label>
+                <input type="radio" name="criterion" value="friends" checked> По друзьям
+            </label>
+            <label>
+                <input type="radio" name="criterion" value="posts"> По постам
+            </label>
+            <label>
+                <input type="radio" name="criterion" value="reposts"> По репостам
+            </label>
+            <label>
+                <input type="radio" name="criterion" value="allMetrics"> По всем метрикам
+            </label>
+        </fieldset>
 
-    <button type="submit">Найти</button>
-</form>
+        <button type="submit">Найти</button>
+    </form>
 
-<div id="result"></div>
+    <div id="loader"></div>
+    <div id="result" hidden></div>
+</div>
 </body>
+
 </html>
