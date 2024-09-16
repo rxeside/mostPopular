@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
             resultDiv.innerHTML = `
                 <p>Самый популярный пользователь:</p>
                 <p>ID: ${data.id}</p>
-                <p>Количество: ${data.count}</p>
+                <p>Количество единиц: ${data.count}</p>
             `;
         } catch (error) {
             resultDiv.innerHTML = '<p>Ошибка при получении данных</p>';
