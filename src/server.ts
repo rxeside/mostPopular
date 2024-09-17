@@ -28,20 +28,8 @@ app.post('/api/popular-user', async (req, res) => {
             // Подсчёт баллов по каждому пользователю
             const scoreMap: { [key: string]: number } = {};
 
-            // Добавляем баллы за друзей
-            if (mostPopularByFriends) {
-                scoreMap[mostPopularByFriends.id] = (scoreMap[mostPopularByFriends.id] || 0) + mostPopularByFriends.count * 10;
-            }
-
-            // Добавляем баллы за посты
-            if (mostPopularByPosts) {
-                scoreMap[mostPopularByPosts.id] = (scoreMap[mostPopularByPosts.id] || 0) + mostPopularByPosts.count * 3;
-            }
-
-            // Добавляем баллы за репосты
-            if (mostPopularByReposts) {
-                scoreMap[mostPopularByReposts.id] = (scoreMap[mostPopularByReposts.id] || 0) + mostPopularByReposts.count * 2;
-            }
+            conversionToPoints(mostPopularByFriends, mostPopularByPosts, mostPopularByReposts, scoreMap);
+            console.log(scoreMap)
 
             // Определение пользователя с наибольшим количеством баллов
             const mostPopularUser = Object.keys(scoreMap).reduce((maxUser, userId) => {
@@ -68,6 +56,21 @@ app.post('/api/popular-user', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+// @ts-ignore
+function conversionToPoints(mostPopularByFriends, mostPopularByPosts, mostPopularByReposts, scoreMap: { [x: string]: any; }) {
+    if (mostPopularByFriends) {
+        scoreMap[mostPopularByFriends.id] = (scoreMap[mostPopularByFriends.id] || 0) + mostPopularByFriends.count * 10;
+    }
+    if (mostPopularByPosts) {
+        scoreMap[mostPopularByPosts.id] = (scoreMap[mostPopularByPosts.id] || 0) + mostPopularByPosts.count * 3;
+    }
+    if (mostPopularByReposts) {
+        scoreMap[mostPopularByReposts.id] = (scoreMap[mostPopularByReposts.id] || 0) + mostPopularByReposts.count * 2;
+    }
+}
+
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

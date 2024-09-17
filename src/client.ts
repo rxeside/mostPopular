@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             resultDiv.hidden = false;
             resultDiv.innerHTML = `
                 <p>Самый популярный пользователь:</p>
-                <p>ID: ${data.id}</p>
+                <p>ID: <a href="https://vk.com/id${data.id}" target="_blank">vk.com/id${data.id}</a></p>
                 <p>Количество единиц: ${data.count}</p>
             `;
         } catch (error) {
