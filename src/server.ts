@@ -2,7 +2,7 @@ import express from 'express';
 import { findMostPopularByFriends, findMostPopularByPosts, findMostPopularByReposts } from './utils/findMostPopular';
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
 app.use(express.static('public'));
@@ -29,7 +29,6 @@ app.post('/api/popular-user', async (req, res) => {
             const scoreMap: { [key: string]: number } = {};
 
             conversionToPoints(mostPopularByFriends, mostPopularByPosts, mostPopularByReposts, scoreMap);
-            console.log(scoreMap)
 
             // Определение пользователя с наибольшим количеством баллов
             const mostPopularUser = Object.keys(scoreMap).reduce((maxUser, userId) => {

@@ -1,19 +1,22 @@
 import { findMostPopularByFriends, findMostPopularByPosts, findMostPopularByReposts } from './utils/findMostPopular';
 
 async function main() {
-    const groupId = '220321079'; // или '210114453'
+    await findingMostPopular();
+}
 
+main();
+
+
+function consoleLogsAboutStarting() {
     console.log('Starting to find the most popular user by friends...');
 
     console.log('Starting to find the most popular user by posts...');
-    
+
     console.log('Starting to find the most popular user by reposts...');
+}
 
-    const mostPopularByFriends = await findMostPopularByFriends(groupId);
-    const mostPopularByPosts = await findMostPopularByPosts(groupId);
-    const mostPopularByReposts = await findMostPopularByReposts(groupId);
-
-
+// @ts-ignore
+function consoleLogsAboutResults(mostPopularByFriends, mostPopularByPosts, mostPopularByReposts) {
     if (mostPopularByFriends) {
         console.log(`Самый популярный по друзьям: ID = ${mostPopularByFriends.id}, Количество друзей = ${mostPopularByFriends.count}`);
     } else {
@@ -34,4 +37,14 @@ async function main() {
     }
 }
 
-main();
+async function findingMostPopular() {
+    const groupId = '220321079'; // или '210114453'
+
+    consoleLogsAboutStarting();
+
+    const mostPopularByFriends = await findMostPopularByFriends(groupId);
+    const mostPopularByPosts = await findMostPopularByPosts(groupId);
+    const mostPopularByReposts = await findMostPopularByReposts(groupId);
+
+    consoleLogsAboutResults(mostPopularByFriends, mostPopularByPosts, mostPopularByReposts);
+}
