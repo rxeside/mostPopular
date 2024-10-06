@@ -56,7 +56,7 @@ async function getMostPopularByAllMetrics(groupId: string) {
 // @ts-ignore
 function conversionToPoints(mostPopularByFriends, mostPopularByPosts, mostPopularByReposts, scoreMap: { [x: string]: any; }) {
     const friendsIndex = 51;
-    const postsIndex = 22;
+    const postsIndex = 21;
     const repostsIndex = 28;
 
     if (mostPopularByFriends) {
