@@ -1,15 +1,14 @@
-import { fetchGroupUsers, fetchUserFriends, fetchUserPosts } from '../api/vkApi';
+import { fetchGroupUsers, fetchUserFriends, fetchUserFollowers } from '../api/vkApi';
 
 interface User {
     id: string;
     count: number;
 }
 
-// Helper function to fetch friends or posts and calculate the count for each user
 async function calculateUserCounts<T>(
     members: number[],
     fetchFunction: (userId: string) => Promise<T>,
-    processFunction: (data: T, members: number[]) => number
+    processFunction: (data: T, members?: number[]) => number
 ): Promise<{ [p: string]: number }> {
     const userCounts: { [key: string]: number } = {};
 
@@ -27,7 +26,6 @@ async function calculateUserCounts<T>(
     return userCounts;
 }
 
-// Find the user with the highest count
 function findUserWithMostCounts(userCounts: { [key: string]: number }): User | null {
     let mostPopularUser: User | null = null;
 
@@ -40,13 +38,13 @@ function findUserWithMostCounts(userCounts: { [key: string]: number }): User | n
     return mostPopularUser;
 }
 
-// Main function to find the most popular user by friends
 async function findMostPopularByFriends(groupId: string): Promise<User | null> {
     try {
         const members = await checkGroupForUsers(groupId);
 
         const userFriendCounts = await calculateUserCounts(members, fetchUserFriends, (data, members) => {
             const friends = data.response?.items || [];
+            // @ts-ignore
             return friends?.filter((friend: number) => members.includes(Number(String(friend)))).length;
         });
 
@@ -57,44 +55,34 @@ async function findMostPopularByFriends(groupId: string): Promise<User | null> {
     }
 }
 
-// Main function to find the most popular user by posts
-async function findMostPopularByPosts(groupId: string): Promise<User | null> {
+async function findMostPopularByTotalFriends(groupId: string): Promise<User | null> {
     try {
         const members = await checkGroupForUsers(groupId);
 
-        const userPostCounts = await calculateUserCounts(members, fetchUserPosts, (data) => data.response?.items.length || 0);
+        const userTotalFriendCounts = await calculateUserCounts(members, fetchUserFriends, (data) => {
+            return data.response?.items?.length || 0;
+        });
 
-        return findUserWithMostCounts(userPostCounts);
+        return findUserWithMostCounts(userTotalFriendCounts);
     } catch (error) {
-        console.error('Error in findMostPopularByPosts:', error);
+        console.error('Error in findMostPopularByTotalFriends:', error);
         return null;
     }
 }
 
-// Main function to find the most popular user by reposts
-async function findMostPopularByReposts(groupId: string): Promise<User | null> {
+async function findMostPopularByFollowers(groupId: string): Promise<User | null> {
     try {
         const members = await checkGroupForUsers(groupId);
 
-        const userRepostCounts = await calculateUserCounts(
-            members,
-            fetchUserPosts,
-            (data) => {
-                const posts = data.response?.items || [];
-                return posts?.reduce((repostCount: any, post: { copy_history: string | any[]; }) => {
-                    return repostCount + (post.copy_history?.length || 0);
-                }, 0);
-            }
-        );
+        const userFollowerCounts = await calculateUserCounts(members, fetchUserFollowers, (data) => data.response?.count || 0);
 
-        return findUserWithMostCounts(userRepostCounts);
+        return findUserWithMostCounts(userFollowerCounts);
     } catch (error) {
-        console.error('Error in findMostPopularByReposts:', error);
+        console.error('Error in findMostPopularByFollowers:', error);
         return null;
     }
 }
 
-// Fetches all group members
 async function fetchAllGroupUsers(groupId: string): Promise<number[]> {
     const members: number[] = [];
     let offset = 0;
@@ -109,18 +97,15 @@ async function fetchAllGroupUsers(groupId: string): Promise<number[]> {
     return members;
 }
 
-// Checks if there are users in the group
 async function checkGroupForUsers(groupId: string): Promise<number[]> {
     const members = await fetchAllGroupUsers(groupId);
     if (!members.length) {
-        console.log(groupId)
         throw new Error('No members found in the group');
     }
     return members;
 }
 
-// Helper function to push members from fetched data
-function pushingMembers(data: { response: { items: string | any[]; }; }, members: any[], count: number): boolean {
+function pushingMembers(data: { response: { items: string | any[] } }, members: any[], count: number): boolean {
     if (data.response) {
         // @ts-ignore
         members.push(...data.response.items);
@@ -129,8 +114,71 @@ function pushingMembers(data: { response: { items: string | any[]; }; }, members
     return false;
 }
 
+async function findAllByFriends(groupId: string): Promise<{ id: string, count: number }[]> {
+    try {
+        const members = await checkGroupForUsers(groupId);
+
+        const userFriendCounts = await calculateUserCounts(members, fetchUserFriends, (data, members) => {
+            const friends = data.response?.items || [];
+            // @ts-ignore
+            return friends?.filter((friend: number) => members.includes(Number(String(friend)))).length;
+        });
+
+        // Преобразуем объект с количеством друзей в массив с объектами
+        return Object.keys(userFriendCounts).map(userId => ({
+            id: userId,
+            count: userFriendCounts[userId]
+        }));
+    } catch (error) {
+        console.error('Error in findAllByFriends:', error);
+        return [];
+    }
+}
+
+
+async function findAllByTotalFriends(groupId: string): Promise<{ id: string, count: number }[]> {
+    try {
+        const members = await checkGroupForUsers(groupId);
+
+        const userTotalFriendCounts = await calculateUserCounts(members, fetchUserFriends, (data) => {
+            return data.response?.items?.length || 0;
+        });
+
+        // Преобразуем объект с общим количеством друзей в массив с объектами
+        return Object.keys(userTotalFriendCounts).map(userId => ({
+            id: userId,
+            count: userTotalFriendCounts[userId]
+        }));
+    } catch (error) {
+        console.error('Error in findAllByTotalFriends:', error);
+        return [];
+    }
+}
+
+
+async function findAllByFollowers(groupId: string): Promise<{ id: string, count: number }[]> {
+    try {
+        const members = await checkGroupForUsers(groupId);
+
+        const userFollowerCounts = await calculateUserCounts(members, fetchUserFollowers, (data) => data.response?.count || 0);
+
+        // Преобразуем объект с количеством подписчиков в массив с объектами
+        return Object.keys(userFollowerCounts).map(userId => ({
+            id: userId,
+            count: userFollowerCounts[userId]
+        }));
+    } catch (error) {
+        console.error('Error in findAllByFollowers:', error);
+        return [];
+    }
+}
+
+
 export {
     findMostPopularByFriends,
-    findMostPopularByPosts,
-    findMostPopularByReposts
+    findMostPopularByTotalFriends,
+    findMostPopularByFollowers,
+    findAllByFriends,
+    findAllByTotalFriends,
+    findAllByFollowers
 };

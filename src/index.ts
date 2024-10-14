@@ -1,4 +1,4 @@
-import { findMostPopularByFriends, findMostPopularByPosts, findMostPopularByReposts } from './utils/findMostPopular';
+import { findMostPopularByFriends, findMostPopularByTotalFriends, findMostPopularByFollowers } from './utils/findMostPopular';
 
 async function main() {
     await findingMostPopular();
@@ -43,8 +43,8 @@ async function findingMostPopular() {
     consoleLogsAboutStarting();
 
     const mostPopularByFriends = await findMostPopularByFriends(groupId);
-    const mostPopularByPosts = await findMostPopularByPosts(groupId);
-    const mostPopularByReposts = await findMostPopularByReposts(groupId);
+    const mostPopularByPosts = await findMostPopularByTotalFriends(groupId);
+    const mostPopularByReposts = await findMostPopularByFollowers(groupId);
 
     consoleLogsAboutResults(mostPopularByFriends, mostPopularByPosts, mostPopularByReposts);
 }

@@ -27,15 +27,26 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const data = await response.json();
-
             // Прячем загрузчик и показываем результат
             loader.style.display = 'none';
             resultDiv.hidden = false;
-            resultDiv.innerHTML = `
-                <p>Самый популярный пользователь:</p>
-                <p>ID: <a href="https://vk.com/id${data.id}" target="_blank">vk.com/id${data.id}</a></p>
-                <p>Количество единиц популярности: ${data.count}</p>
-            `;
+            let resultText = `
+            <p>Самый популярный пользователь:</p>
+            <p>ID: <a href="https://vk.com/id${data.id}" target="_blank">vk.com/id${data.id}</a></p>
+        `;
+
+            // Проверяем критерий для вывода правильного значения
+            if (criterion === 'friends') {
+                resultText += `<p>Количество друзей в группе: ${data.count}</p>`;
+            } else if (criterion === 'totalFriends') {
+                resultText += `<p>Общее количество друзей: ${data.count}</p>`;
+            } else if (criterion === 'followers') {
+                resultText += `<p>Количество подписчиков: ${data.count}</p>`;
+            } else if (criterion === 'allMetrics') {
+                resultText += `<p>Единицы популярности: ${data.score}</p>`;
+            }
+
+            resultDiv.innerHTML = resultText;
         } catch (error) {
             loader.style.display = 'none';
             resultDiv.hidden = false;

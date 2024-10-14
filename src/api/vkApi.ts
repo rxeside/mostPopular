@@ -37,24 +37,25 @@ async function fetchUserFriends(userId: string) {
     }
 }
 
-async function fetchUserPosts(userId: string) {
+async function fetchUserFollowers(userId: string) {
     try {
-        const response = await axios.get('https://api.vk.com/method/wall.get', {
+        const response = await axios.get('https://api.vk.com/method/users.getFollowers', {
             params: {
-                owner_id: userId,
+                user_id: userId,
                 access_token: token,
                 v: apiVersion
             }
         });
         return response.data;
     } catch (error) {
-        console.error('Error in fetchUserPosts:', error);
+        console.error('Error in fetchUserFollowers:', error);
         throw error;
     }
 }
 
+
 export {
     fetchGroupUsers,
     fetchUserFriends,
-    fetchUserPosts,
+    fetchUserFollowers,
 };
